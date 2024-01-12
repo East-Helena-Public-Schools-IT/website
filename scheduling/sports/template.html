@@ -1,0 +1,88 @@
+<div>
+  <table
+    border="1"
+    dir="ltr"
+    cellpadding="0"
+    cellspacing="0"
+    xmlns="http://www.w3.org/1999/xhtml"
+    class="date-table"
+  >
+    <colgroup>
+      <col width="371" style="width: 160px" />
+      <col width="165" style="width: 80px" />
+      <col width="100" style="width: 80px" />
+      <col width="100" style="width: 80px" />
+    </colgroup>
+    <thead>
+      <tr>
+        <td class="bold row">Event</td>
+        <td class="bold row">Date</td>
+        <td class="bold row">Time</td>
+        <td class="bold row">Location</td>
+      </tr>
+    </thead>
+    <tbody id="varsity-football-table-body">
+      <tr id="loading">
+        <td class="row">loading...</td>
+        <td class="row">loading...</td>
+        <td class="row">loading...</td>
+        <td class="row">loading...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- embedded vv -->
+
+<style>
+  .bold {
+    font-weight: bold;
+  }
+  .row {
+    overflow: hidden;
+    padding: 2px 3px;
+    vertical-align: bottom;
+    text-align: left;
+  }
+  .date-table {
+    table-layout: fixed;
+    font-size: 10pt;
+    font-family: Arial;
+    width: 459px;
+    border-collapse: collapse;
+    border-style: none;
+  }
+</style>
+<script type="module" async>
+  console.log("Fetching schedule...");
+  let body = document.getElementById("date-table-body");
+  fetch(
+    "https://script.google.com/macros/s/AKfycbzDoEMTlOJeT2ei3-QGjyW-u_kGf3q33B2J91pg_l-zWWXwP96GmS4xdSaPCok1nCQvWg/exec"
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Got schedule.");
+      for (const i in data) {
+        const sport = data[i];
+        const idName = sport.name.toLowerCase().replaceAll(" ", "-");
+        const body = document.getElementById(idName + "-table-body");
+        if (body == null) {continue}
+        const schedule = sport.schedule;
+
+        for (const j in schedule) {
+          const event = schedule[j];
+          const row = `<tr>
+          <td class="row">${event.name}</td>
+          <td class="row">${event.date}</td>
+          <td class="row">${event.time}</td>
+          <td class="row">${event.location}</td></tr>`;
+          body.insertAdjacentHTML("beforeend", row);
+        }
+      }
+      const loading = document.querySelectorAll("[id=loading]");
+      for (const i in loading) {
+        const item = loading[i];
+        item.remove();
+      }
+    });
+</script>

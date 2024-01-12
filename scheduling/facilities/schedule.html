@@ -1,0 +1,72 @@
+<p id="loading">This make take a second to load...</p>
+<div id="table-anchor"></div>
+
+<!-- embedded vv -->
+<style>
+  .bold {
+    font-weight: bold;
+  }
+  .row {
+    overflow: hidden;
+    padding: 2px 3px;
+    vertical-align: middle;
+    text-align: left;
+  }
+  .date-col {
+    width: 5ch;
+  }
+  .time-col {
+    width: 15ch;
+  }
+  .event-col {
+    width: 75ch;
+  }
+  .date-table {
+    table-layout: fixed;
+    font-size: 10pt;
+    font-family: Arial;
+    width: 459px;
+    border-collapse: collapse;
+    border-style: none;
+  }
+</style>
+
+<script type="module" async>
+  console.log("Fetching schedule...");
+  let body = document.getElementById("date-table-body");
+  fetch("https://script.google.com/macros/s/AKfycbymu6EWQ6eT-_0xGq9RCXgAE6ppQ2jM8rjiBogurm6BiN5tJuT8ksoakOcQfAEmFbQR/exec")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Got schedule.");
+      const anchor = document.getElementById("table-anchor");
+      for (const i in data) {
+        const school = data[i];
+        const schoolName = school.name;
+        const schedule = school.schedule;
+        const tbodyID = schoolName + "-tbody"
+        const table = `
+<h1>${schoolName}</h1>
+<table border="1" dir="ltr" cellpadding="0" cellspacing="0" xmlns="http://www.w3.org/1999/xhtml" class="date-table">
+  <colgroup><col class="date-col" /><col class="time-col" /><col class="event-col" /></colgroup>
+  <thead>
+    <tr>
+      <td class="bold row">Date</td><td class="bold row">Time</td><td class="bold row">Title</td>
+    </tr>
+  </thead>
+  <tbody id="${tbodyID}"></tbody>
+</table>
+`
+        anchor.insertAdjacentHTML("beforeend", table);
+        const tbody = document.getElementById(tbodyID);
+        for (const j in schedule) {
+          const event = schedule[j];
+          const row = `<tr>
+          <td class="row">${event.date}</td>
+          <td class="row">${event.time}</td>
+          <td class="row">${event.title}</td></tr>`;
+          tbody.insertAdjacentHTML("beforeend", row);
+        }
+      }
+      document.getElementById("loading").remove()
+    });
+</script>

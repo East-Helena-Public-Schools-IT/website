@@ -1,0 +1,67 @@
+<div>
+  <div class="center">
+    <p>May take several seconds to load</p>
+    <p>Use CTRL+F to search</p>
+  </div>
+  <table id="sdpctable">
+    <tr>
+      <th>Application</th>
+      <th>Status</th>
+    </tr>
+  </table>
+</div>
+<style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  td,
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  td a {
+    width: 100%;
+    display: block;
+  }
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  center {
+    text-align: center;
+  }
+</style>
+<script type="module" async>
+  let div = document.getElementById("sdpctable");
+
+  fetch(
+    "https://script.google.com/macros/s/AKfycbzfjnQ073CW1djoKLOxnvO-mXY2vP3WEyUz75Qn2yU2RDMPDPYU7h_YqfrrMEK72M-sWA/exec"
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      for (const i in data) {
+        const entry = data[i];
+        let row = document.createElement("tr");
+
+        if (!entry.url.startsWith("https://")) {
+          entry.url = "https://" + entry.url;
+        }
+
+        let application = document.createElement("td");
+        let agreement = document.createElement("td");
+        let link = document.createElement("a");
+
+        link.href = entry.url;
+        link.innerText = entry.app;
+        agreement.innerText = entry.agreement;
+
+        application.appendChild(link);
+        row.appendChild(application);
+        row.appendChild(agreement);
+
+        div.appendChild(row);
+      }
+    });
+</script>

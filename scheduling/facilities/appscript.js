@@ -39,7 +39,7 @@ function doGet() {
       school.startIndex = i
       // Loop forward till you hit another shcool (or end of sheet)
       for (let j = i + 1; j < sheet.length; j++) {
-        if (isSchool(sheet[j][1])) {
+        if (isSchool(sheet[j][titleCollum])) {
           school.endIndex = j
           i = j - 1
           break;

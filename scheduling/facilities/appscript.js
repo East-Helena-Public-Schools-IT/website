@@ -12,35 +12,56 @@ function doGet() {
   // Look for school names in the sheet
   for (let i = 0; i < sheet.length; i++) {
     let cell = sheet[i][1].trim()
-    
+
     if (isSchool(cell)) { // the cell is one of the schools
       let school = map.get(cell)
       school.startIndex = i
       // Loop forward till you hit another shcool (or end of sheet)
-      for (let j = i+1; j < sheet.length; j++) {
+      for (let j = i + 1; j < sheet.length; j++) {
         if (isSchool(sheet[j][1])) {
           school.endIndex = j
-          i=j-1
+          i = j - 1
           break;
         }
       }
     }
   }
 
+  // Figure out how the data is stored (the sheet isn't always the same)
+  let dateCollum = 0;
+  let timeCollum = 0;
+  let titleCollum = 0;
+  for (const cellIndex in sheet[0]) {
+    const cell = sheet[0][cellIndex];
+    if (cell === "Date") {
+      dateCollum = cellIndex
+      continue
+    }
+    if (cell === "Time") {
+      timeCollum = cellIndex
+      continue
+    }
+    if (cell !== "") {
+      // must be the title
+      titleCollum = cellIndex
+      continue
+    }
+  }
+
   for (const i in schools) {
     let mappedSchool = map.get(schools[i])
-    let schedule = sheet.slice(mappedSchool.startIndex+1, mappedSchool.endIndex)
-  
+    let schedule = sheet.slice(mappedSchool.startIndex + 1, mappedSchool.endIndex)
+
     let school = {}
     school.name = schools[i]
     school.schedule = []
 
     for (const j in schedule) {
-      let scheduleItem        = schedule[j]
-      let schoolScheduleObj   = {}
-      schoolScheduleObj.date  = scheduleItem[0] // date
-      schoolScheduleObj.title = scheduleItem[1] // title
-      schoolScheduleObj.time  = scheduleItem[2] // time
+      let scheduleItem = schedule[j]
+      let schoolScheduleObj = {}
+      schoolScheduleObj.date = scheduleItem[dateCollum]
+      schoolScheduleObj.title = scheduleItem[titleCollum]
+      schoolScheduleObj.time = scheduleItem[timeCollum]
       if (schoolScheduleObj.title != "") {
         school.schedule.push(schoolScheduleObj)
       }

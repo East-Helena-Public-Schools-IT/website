@@ -9,24 +9,6 @@ function doGet() {
   for (const i in schools) { map.set(schools[i], {}) }
   function isSchool(cell) { return map.get(cell) == undefined ? false : true }
 
-  // Look for school names in the sheet
-  for (let i = 0; i < sheet.length; i++) {
-    let cell = sheet[i][1].trim()
-
-    if (isSchool(cell)) { // the cell is one of the schools
-      let school = map.get(cell)
-      school.startIndex = i
-      // Loop forward till you hit another shcool (or end of sheet)
-      for (let j = i + 1; j < sheet.length; j++) {
-        if (isSchool(sheet[j][1])) {
-          school.endIndex = j
-          i = j - 1
-          break;
-        }
-      }
-    }
-  }
-
   // Figure out how the data is stored (the sheet isn't always the same)
   let dateCollum = 0;
   let timeCollum = 0;
@@ -45,6 +27,24 @@ function doGet() {
       // must be the title
       titleCollum = cellIndex
       continue
+    }
+  }
+
+  // Look for school names in the sheet
+  for (let i = 0; i < sheet.length; i++) {
+    let cell = sheet[i][titleCollum].trim()
+
+    if (isSchool(cell)) { // the cell is one of the schools
+      let school = map.get(cell)
+      school.startIndex = i
+      // Loop forward till you hit another shcool (or end of sheet)
+      for (let j = i + 1; j < sheet.length; j++) {
+        if (isSchool(sheet[j][1])) {
+          school.endIndex = j
+          i = j - 1
+          break;
+        }
+      }
     }
   }
 

@@ -1,3 +1,7 @@
+// 1) Looks for "yy/yy Master Schedule"
+// 2) Takes groups based on blank cell -> blank cell
+// 3) Creates sport's name based on the first cell
+
 // Runs on HTTP GET
 function doGet() {
   const selectedSheet = getCurrentScheduleSheet();
@@ -67,10 +71,11 @@ function getCurrentScheduleSheet() {
   function springTime() {
     const currentYear = (new Date().getYear() -101).toString();
     const nextYear = (new Date().getYear() -100).toString();
-    return currentYear+"/"+nextYear
+    return currentYear+"/"+nextYear;
   }
 
-  let yearyear  = new Date().getMonth() > 6 ? fallTime() : springTime();
+  // getMonth is zero-indexed
+  let yearyear  = new Date().getMonth() >= 5 ? fallTime() : springTime();
 
   sheetName = yearyear + " Master Schedule"
   Logger.log("Getting \""+sheetName+"\"");
